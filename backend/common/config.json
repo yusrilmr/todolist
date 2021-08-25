@@ -6,5 +6,5 @@
   "DBPwd"	    : "mysecretpassword",
   "Database"    : "todolist",
   "LogLevel"    : 4,
-  "TokenExp"    : 20
+  "TokenExp"    : 120
 }
