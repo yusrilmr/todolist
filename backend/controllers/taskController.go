@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"fmt"
 	"encoding/json"
+	"github.com/gorilla/mux"
+
 	//"github.com/gorilla/mux"
 	"net/http"
 
@@ -17,7 +18,6 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var dataResource TaskResource
 	// Decode the incoming User json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
-	fmt.Println(err)
 	if err != nil {
 		common.DisplayAppError(
 			w,
@@ -29,10 +29,8 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	task := &dataResource.Data
-	fmt.Println(task)
 	context := NewContext().PostgresDB
 	repo := &data.TaskRepository{C: context}
-	// Insert User document
 	repo.Create(task)
 	if j, err := json.Marshal(TaskResource{Data: *task}); err != nil {
 		common.DisplayAppError(
@@ -72,47 +70,38 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 //	w.Write(j)
 //}
 //
-//// GetTaskByID returns a single Task document by id
-//// Handler for HTTP Get - "/tasks/{id}"
-//func GetTaskByID(w http.ResponseWriter, r *http.Request) {
-//	// Get id from the incoming url
-//	vars := mux.Vars(r)
-//	id := vars["id"]
-//	context := NewContext()
-//
-//	defer context.Close()
-//	col := context.DbCollection("tasks")
-//	repo := &data.TaskRepository{C: col}
-//	task, err := repo.GetById(id)
-//	if err != nil {
-//		if err == mgo.ErrNotFound {
-//			w.WriteHeader(http.StatusNoContent)
-//
-//		} else {
-//			common.DisplayAppError(
-//				w,
-//				err,
-//				"An unexpected error has occurred",
-//				500,
-//			)
-//
-//		}
-//		return
-//	}
-//	j, err := json.Marshal(task)
-//	if err != nil {
-//		common.DisplayAppError(
-//			w,
-//			err,
-//			"An unexpected error has occurred",
-//			500,
-//		)
-//		return
-//	}
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//	w.Write(j)
-//}
+// GetTaskById returns a single Task document by id
+// Handler for HTTP Get - "/tasks/{id}"
+func GetTaskById(w http.ResponseWriter, r *http.Request) {
+	// Get id from the incoming url
+	vars := mux.Vars(r)
+	id := vars["id"]
+	context := NewContext().PostgresDB
+	repo := &data.TaskRepository{C: context}
+	task, err := repo.GetById(id)
+	if err != nil {
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
+		return
+	}
+	j, err := json.Marshal(task)
+	if err != nil {
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
 //
 //// GetTasksByUser returns all Tasks created by a User
 //// Handler for HTTP Get - "/tasks/users/{id}"
