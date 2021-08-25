@@ -1,16 +1,17 @@
 package common
 
 import (
-	"fmt"
-	"github.com/golang-jwt/jwt"
+	"crypto/rsa"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 // using asymmetric crypto/RSA keys
-// location of private/public key files
 const (
 	// openssl genrsa -out app.rsa 1024
 	privKeyPath = "keys/app.rsa"
@@ -20,40 +21,54 @@ const (
 
 // private key for signing and public key for verification
 var (
-	verifyKey, signKey []byte
+	verifyKey *rsa.PublicKey
+	signKey   *rsa.PrivateKey
 )
+
+// JwtClaim adds email as a claim to the token
+type JwtClaim struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
+}
 
 // Read the key files before starting http handlers
 func initKeys() {
-	var err error
-	signKey, err = ioutil.ReadFile(privKeyPath)
+	signBytes, err := ioutil.ReadFile(privKeyPath)
 	if err != nil {
 		log.Fatalf("[initKeys]: %s\n", err)
 	}
-	verifyKey, err = ioutil.ReadFile(pubKeyPath)
+
+	signKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
 	if err != nil {
 		log.Fatalf("[initKeys]: %s\n", err)
-		panic(err)
+	}
+
+	verifyBytes, err := ioutil.ReadFile(pubKeyPath)
+	if err != nil {
+		log.Fatalf("[initKeys]: %s\n", err)
+	}
+
+	verifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
+	if err != nil {
+		log.Fatalf("[initKeys]: %s\n", err)
 	}
 }
 
 // Generate JWT token
 func GenerateJWT(email string) (string, error) {
 	// set claims for JWT token
-	atClaims := jwt.MapClaims{}
-	atClaims["authorized"] = true
-	atClaims["email"] = email
-	// set the expire time for JWT token
-	atClaims["exp"] = time.Now().Add(time.Minute * time.Duration(AppConfig.TokenExp)).Unix()
-
-	// create a signer for rsa 256
-	at := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), atClaims)
-	key, err := jwt.ParseRSAPrivateKeyFromPEM(signKey)
-	if err != nil {
-		return "", fmt.Errorf("error parsing RSA private key: %v\n", err)
+	claims := &JwtClaim{
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+			Issuer:    "admin",
+		},
 	}
 
-	tokenString, err := at.SignedString(key)
+	// create a signer for rsa 256
+	at := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+
+	tokenString, err := at.SignedString(signKey)
 	if err != nil {
 		return "", err
 	}
@@ -62,18 +77,12 @@ func GenerateJWT(email string) (string, error) {
 
 // Middleware for validating JWT tokens
 func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	key, err := jwt.ParseRSAPublicKeyFromPEM(verifyKey)
-	if err != nil {
-		return
-	}
-
+	tokenString := ExtractToken(r)
 	// validate the token
-	fmt.Println(r.Header["Token"])
-	fmt.Println(r.Header["Token"][0])
-	token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
 
 		// Verify the token with public key, which is the counter part of private key
-		return key, nil
+		return verifyKey, nil
 	})
 
 	if err != nil {
@@ -120,4 +129,14 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 			401,
 		)
 	}
+}
+
+func ExtractToken(r *http.Request) string {
+	bearToken := r.Header.Get("Authorization")
+	//normally Authorization the_token_xxx
+	strArr := strings.Split(bearToken, " ")
+	if len(strArr) == 2 {
+		return strArr[1]
+	}
+	return ""
 }
