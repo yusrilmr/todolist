@@ -27,12 +27,12 @@ type (
 	TasksResource struct {
 		Data []models.Task `json:"data"`
 	}
-	// For Post/Put - /notes
+	// For Post/Put - /labels
 	LabelResource struct {
-		Data LabelModel `json:"data"`
+		Data models.Label `json:"data"`
 	}
-	// For Get - /notes
-	// For /notes/tasks/id
+	// For Get - /lables
+	// For /lables/tasks/id
 	LabelsResource struct {
 		Data []models.Label `json:"data"`
 	}
@@ -45,10 +45,5 @@ type (
 	AuthUserModel struct {
 		User  models.User `json:"user"`
 		Token string      `json:"token"`
-	}
-	//Model for a TaskNote
-	LabelModel struct {
-		TaskId      string `json:"taskid"`
-		Description string `json:"description"`
 	}
 )

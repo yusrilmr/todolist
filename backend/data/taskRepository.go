@@ -1,8 +1,9 @@
 package data
 
 import (
-	"github.com/yusrilmr/todolist/backend/models"
 	"gorm.io/gorm"
+
+	"github.com/yusrilmr/todolist/backend/models"
 )
 
 type TaskRepository struct {

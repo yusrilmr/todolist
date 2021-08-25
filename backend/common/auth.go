@@ -60,7 +60,7 @@ func GenerateJWT(email string) (string, error) {
 	claims := &JwtClaim{
 		Email: email,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 20).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * time.Duration(AppConfig.TokenExp)).Unix(),
 			Issuer:    "admin",
 		},
 	}

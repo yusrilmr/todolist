@@ -9,7 +9,7 @@ func InitRoutes() *mux.Router {
 	router = SetUserRoutes(router)
 	// Routes for the Task entity
 	router = SetTaskRoutes(router)
-	// Routes for the TaskNote entity
-	router = SetNoteRoutes(router)
+	// Routes for the Label entity
+	router = SetLabelRoutes(router)
 	return router
 }
