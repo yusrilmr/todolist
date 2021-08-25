@@ -46,6 +46,8 @@ func (r *LabelRepository) Delete(id string) error {
 //	return labels
 //}
 func (r *LabelRepository) GetById(id string) (label models.Label, err error) {
-	err = r.C.First(&label, id).Error
+	// Preload Tasks when find label
+	//r.C.Preload("Tasks").Find(&label)
+	err = r.C.Preload("Task").First(&label, id).Error
 	return
 }

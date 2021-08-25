@@ -47,7 +47,7 @@ func (r *TaskRepository) GetAll() []models.Task {
 }
 
 func (r *TaskRepository) GetById(id string) (task models.Task, err error) {
-	err = r.C.First(&task, id).Error
+	err = r.C.Preload("Label").First(&task, id).Error
 	return
 }
 

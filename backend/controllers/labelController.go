@@ -21,7 +21,7 @@ func CreateLabel(w http.ResponseWriter, r *http.Request) {
 		common.DisplayAppError(
 			w,
 			err,
-			"Invalid User data",
+			"Invalid data",
 			500,
 		)
 		return
