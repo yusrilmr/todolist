@@ -1,0 +1,10 @@
+{
+  "Server"      : "0.0.0.0:8080",
+  "DBPort"      : "5432",
+  "DBHost"      : "127.0.0.1",
+  "DBUser"	    : "postgres",
+  "DBPwd"	    : "mysecretpassword",
+  "Database"    : "todolist",
+  "LogLevel"    : 4,
+  "TokenExp"    : 20
+}
