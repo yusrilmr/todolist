@@ -1,7 +1,7 @@
 {
   "Server"      : "0.0.0.0:8080",
   "DBPort"      : "5432",
-  "DBHost"      : "127.0.0.1",
+  "DBHost"      : "some-postgres",
   "DBUser"	    : "postgres",
   "DBPwd"	    : "mysecretpassword",
   "Database"    : "todolist",
