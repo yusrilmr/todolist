@@ -46,29 +46,28 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//// GetTasks returns all Task
-//// Handler for HTTP Get - "/tasks"
-//func GetTasks(w http.ResponseWriter, r *http.Request) {
-//	context := GetNewContext()
-//	defer context.Close()
-//	col := context.DbCollection("tasks")
-//	repo := &data.TaskRepository{C: col}
-//	tasks := repo.GetAll()
-//	j, err := json.Marshal(TasksResource{Data: tasks})
-//	if err != nil {
-//		common.DisplayAppError(
-//			w,
-//			err,
-//			"An unexpected error has occurred",
-//			500,
-//		)
-//		return
-//	}
-//	w.WriteHeader(http.StatusOK)
-//	w.Header().Set("Content-Type", "application/json")
-//	w.Write(j)
-//}
-//
+// GetTasks returns all Task
+// Handler for HTTP Get - "/tasks"
+func GetTasks(w http.ResponseWriter, r *http.Request) {
+	context := GetNewContext().PostgresDB
+	repo := &data.TaskRepository{C: context}
+	tasks := repo.GetAll()
+	j, err := json.Marshal(TasksResource{Data: tasks})
+
+	if err != nil {
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(j)
+}
+
 // GetTaskById returns a single Task  by id
 // Handler for HTTP Get - "/tasks/{id}"
 func GetTaskById(w http.ResponseWriter, r *http.Request) {
@@ -101,33 +100,33 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
-//
-//// GetTasksByUser returns all Tasks created by a User
-//// Handler for HTTP Get - "/tasks/users/{id}"
-//func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
-//	// Get id from the incoming url
-//	vars := mux.Vars(r)
-//	user := vars["id"]
-//	context := GetNewContext()
-//	defer context.Close()
-//	col := context.DbCollection("tasks")
-//	repo := &data.TaskRepository{C: col}
-//	tasks := repo.GetByUser(user)
-//	j, err := json.Marshal(TasksResource{Data: tasks})
-//	if err != nil {
-//		common.DisplayAppError(
-//			w,
-//			err,
-//			"An unexpected error has occurred",
-//			500,
-//		)
-//		return
-//	}
-//	w.WriteHeader(http.StatusOK)
-//	w.Header().Set("Content-Type", "application/json")
-//	w.Write(j)
-//}
-//
+
+// GetTasksByUser returns all Tasks created by a User
+// Handler for HTTP Get - "/tasks/users/{id}"
+func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
+	// Get id from the incoming url
+	vars := mux.Vars(r)
+	user := vars["id"]
+
+	context := GetNewContext().PostgresDB
+	repo := &data.TaskRepository{C: context}
+
+	tasks := repo.GetByUser(user)
+	j, err := json.Marshal(TasksResource{Data: tasks})
+	if err != nil {
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(j)
+}
+
 // UpdateTask update an existing Task
 // Handler for HTTP Put - "/tasks/{id}"
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
@@ -171,7 +170,6 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-
 }
 
 // DeleteTask deelete an existing Task

@@ -38,15 +38,8 @@ func (r *TaskRepository) Delete(id string) error {
 
 // GetAll fetches all Tasks
 func (r *TaskRepository) GetAll() []models.Task {
-	//var tasks []models.Task
-	//iter := r.C.Find(nil).Iter()
-	//result := models.Task{}
-	//for iter.Next(&result) {
-	//	tasks = append(tasks, result)
-	//}
 	var tasks []models.Task
-	//tasks = r.C.Find(&tasks)
-	//results := r.C.Find(&tasks)
+	r.C.Find(&tasks)
 	return tasks
 }
 
@@ -57,13 +50,8 @@ func (r *TaskRepository) GetById(id string) (task models.Task, err error) {
 }
 
 // GetByUser fetches Task by user
-func (r *TaskRepository) GetByUser(user string) []models.Task {
-	//var tasks []models.Task
-	//iter := r.C.Find(bson.M{"createdby": user}).Iter()
-	//result := models.Task{}
-	//for iter.Next(&result) {
-	//	tasks = append(tasks, result)
-	//}
+func (r *TaskRepository) GetByUser(userID string) []models.Task {
 	var tasks []models.Task
+	r.C.Where("user_id = ?", userID).Find(&tasks)
 	return tasks
 }
