@@ -4,44 +4,52 @@ import (
 	"github.com/yusrilmr/todolist/backend/models"
 )
 
-//Models for JSON resources
+// Models for JSON resources
 type (
-	//For Post - /user/register
+	// UserResource is model for Post - /user/register
 	UserResource struct {
 		Data models.User `json:"data"`
 	}
-	//For Post - /user/login
+
+	// LoginResource is model for Post - /user/login
 	LoginResource struct {
 		Data LoginModel `json:"data"`
 	}
-	//Response for authorized user Post - /user/login
+
+	// AuthUserResource is response model for authorized user Post - /user/login
 	AuthUserResource struct {
 		Data AuthUserModel `json:"data"`
 	}
-	// For Post/Put - /tasks
-	// For Get - /tasks/id
+
+	// TaskResource is model for Post/Put - /tasks
+	// TaskResource is model for Get - /tasks/id
 	TaskResource struct {
 		Data models.Task `json:"data"`
 	}
-	// For Get - /tasks
+
+	// TasksResource is model for Get - /tasks
 	TasksResource struct {
 		Data []models.Task `json:"data"`
 	}
-	// For Post/Put - /labels
+
+	// LabelResource is model for Post/Put - /labels
 	LabelResource struct {
 		Data models.Label `json:"data"`
 	}
-	// For Get - /lables
-	// For /lables/tasks/id
+
+	// LabelsResource is model for Get - /lables
+	// LabelsResource is model for /lables/tasks/id
 	LabelsResource struct {
 		Data []models.Label `json:"data"`
 	}
-	//Model for authentication
+
+	// LoginModel is model for authentication
 	LoginModel struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
-	//Model for authorized user with access token
+
+	// AuthUserModel is model for authorized user with access token
 	AuthUserModel struct {
 		User  models.User `json:"user"`
 		Token string      `json:"token"`

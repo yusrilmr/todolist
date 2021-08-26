@@ -31,7 +31,7 @@ type JwtClaim struct {
 	jwt.StandardClaims
 }
 
-// Read the key files before starting http handlers
+// initKeys reads the key files before starting http handlers
 func initKeys() {
 	signBytes, err := ioutil.ReadFile(privKeyPath)
 	if err != nil {
@@ -54,7 +54,7 @@ func initKeys() {
 	}
 }
 
-// Generate JWT token
+// GenerateJWT generates JWT token
 func GenerateJWT(email string) (string, error) {
 	// set claims for JWT token
 	claims := &JwtClaim{
@@ -75,7 +75,7 @@ func GenerateJWT(email string) (string, error) {
 	return tokenString, nil
 }
 
-// Middleware for validating JWT tokens
+// Authorize is the middleware for validating JWT tokens
 func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	tokenString := ExtractToken(r)
 	// validate the token
@@ -131,6 +131,7 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	}
 }
 
+// ExtractToken extracts jwt from header
 func ExtractToken(r *http.Request) string {
 	bearToken := r.Header.Get("Authorization")
 	//normally Authorization the_token_xxx

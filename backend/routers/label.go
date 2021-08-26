@@ -6,6 +6,7 @@ import (
 	"github.com/yusrilmr/todolist/backend/common"
 	"github.com/yusrilmr/todolist/backend/controllers"
 )
+
 func SetLabelRoutes(router *mux.Router) *mux.Router {
 	labelRouter := mux.NewRouter()
 	labelRouter.HandleFunc("/labels", controllers.CreateLabel).Methods("POST")

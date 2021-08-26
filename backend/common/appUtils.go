@@ -21,6 +21,7 @@ type (
 	}
 )
 
+// DisplayAppError builds the response message when an error occurs
 func DisplayAppError(w http.ResponseWriter, handlerError error, message string, code int) {
 	errObj := appError{
 		Error:      handlerError.Error(),
@@ -39,13 +40,8 @@ func DisplayAppError(w http.ResponseWriter, handlerError error, message string, 
 // AppConfig holds the configuration values from config.json file
 var AppConfig config
 
-// Initialize AppConfig
-func initConfig() {
-	loadDbConfig()
-}
-
-// Reads config.json and decode into AppConfig
-func loadDbConfig() {
+// loadAppConfig Reads config.json and decode into AppConfig
+func loadAppConfig() {
 	file, err := os.Open("common/config.json")
 	defer file.Close()
 	if err != nil {

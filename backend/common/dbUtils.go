@@ -10,6 +10,7 @@ import (
 
 var db *gorm.DB
 
+// GetDB gets database access
 func GetDB() *gorm.DB {
 	if db == nil {
 		var err error
@@ -27,6 +28,7 @@ func GetDB() *gorm.DB {
 	return db
 }
 
+// createDBConnection creates database session
 func createDBConnection() {
 	var err error
 

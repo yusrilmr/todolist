@@ -10,12 +10,12 @@ type Context struct {
 	PostgresDB *gorm.DB
 }
 
-// Create a new Context object for each HTTP request
-func NewContext() *Context {
+// GetNewContext creates a new db context object
+func GetNewContext() *Context {
 	db := common.GetDB()
-	db_ctx := db.WithContext(db.Statement.Context)
+	dbCtx := db.WithContext(db.Statement.Context)
 	context := &Context{
-		PostgresDB: db_ctx,
+		PostgresDB: dbCtx,
 	}
 	return context
 }

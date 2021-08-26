@@ -9,8 +9,8 @@ import (
 	"github.com/yusrilmr/todolist/backend/models"
 )
 
+// Register adds a new User
 // Handler for HTTP Post - "/users/register"
-// Add a new User document
 func Register(w http.ResponseWriter, r *http.Request) {
 	var dataResource UserResource
 	// Decode the incoming User json
@@ -27,9 +27,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := &dataResource.Data
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.UserRepository{C: context}
-	// Insert User document
+	// Insert User
 	repo.CreateUser(user)
 	// Clean-up the hashpassword to eliminate it from response
 	user.HashPassword = nil
@@ -48,8 +48,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Login authenticates with email and password
 // Handler for HTTP Post - "/users/login"
-// Authenticate with username and apssword
 func Login(w http.ResponseWriter, r *http.Request) {
 	var dataResource LoginResource
 	var token string
@@ -73,7 +73,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Password: loginModel.Password,
 	}
 
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.UserRepository{C: context}
 
 	// Authenticate the login user

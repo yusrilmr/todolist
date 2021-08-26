@@ -11,7 +11,7 @@ import (
 	//"github.com/yusrilmr/todolist/backend/models"
 )
 
-// CreateTask insert a new Task document
+// CreateTask insert a new Task
 // Handler for HTTP Post - "/tasks
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var dataResource TaskResource
@@ -28,7 +28,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	task := &dataResource.Data
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.TaskRepository{C: context}
 	repo.Create(task)
 	if j, err := json.Marshal(TaskResource{Data: *task}); err != nil {
@@ -46,10 +46,10 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//// GetTasks returns all Task document
+//// GetTasks returns all Task
 //// Handler for HTTP Get - "/tasks"
 //func GetTasks(w http.ResponseWriter, r *http.Request) {
-//	context := NewContext()
+//	context := GetNewContext()
 //	defer context.Close()
 //	col := context.DbCollection("tasks")
 //	repo := &data.TaskRepository{C: col}
@@ -69,13 +69,13 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 //	w.Write(j)
 //}
 //
-// GetTaskById returns a single Task document by id
+// GetTaskById returns a single Task  by id
 // Handler for HTTP Get - "/tasks/{id}"
 func GetTaskById(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.TaskRepository{C: context}
 	task, err := repo.GetById(id)
 	if err != nil {
@@ -108,7 +108,7 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 //	// Get id from the incoming url
 //	vars := mux.Vars(r)
 //	user := vars["id"]
-//	context := NewContext()
+//	context := GetNewContext()
 //	defer context.Close()
 //	col := context.DbCollection("tasks")
 //	repo := &data.TaskRepository{C: col}
@@ -128,7 +128,7 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 //	w.Write(j)
 //}
 //
-// UpdateTask update an existing Task document
+// UpdateTask update an existing Task
 // Handler for HTTP Put - "/tasks/{id}"
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
@@ -158,9 +158,9 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	task.ID = uint(u64)
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.TaskRepository{C: context}
-	// Update an existing Task document
+	// Update an existing Task
 	if err := repo.Update(task); err != nil {
 		common.DisplayAppError(
 			w,
@@ -174,12 +174,12 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// DeleteTask deelete an existing Task document
+// DeleteTask deelete an existing Task
 // Handler for HTTP Delete - "/tasks/{id}"
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.TaskRepository{C: context}
 	// Delete an existing Task
 	err := repo.Delete(id)

@@ -10,6 +10,7 @@ type UserRepository struct {
 	C *gorm.DB
 }
 
+// CreateUser creates new user
 func (r *UserRepository) CreateUser(user *models.User) error {
 	hpass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -23,6 +24,7 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 	return err
 }
 
+// Login validates email and password
 func (r *UserRepository) Login(user models.User) (u models.User, err error) {
 	err = r.C.Where("email = ?", user.Email).First(&u).Error
 	if err != nil {

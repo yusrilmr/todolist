@@ -11,7 +11,7 @@ import (
 	//"github.com/yusrilmr/todolist/backend/models"
 )
 
-// CreateLabel insert a new Label document
+// CreateLabel insert a new Label
 // Handler for HTTP Post - "/labels
 func CreateLabel(w http.ResponseWriter, r *http.Request) {
 	var dataResource LabelResource
@@ -28,7 +28,7 @@ func CreateLabel(w http.ResponseWriter, r *http.Request) {
 	}
 
 	label := &dataResource.Data
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.LabelRepository{C: context}
 	repo.Create(label)
 	if j, err := json.Marshal(LabelResource{Data: *label}); err != nil {
@@ -46,10 +46,10 @@ func CreateLabel(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//// GetLabels returns all Label document
+//// GetLabels returns all Label
 //// Handler for HTTP Get - "/labels"
 //func GetLabels(w http.ResponseWriter, r *http.Request) {
-//	context := NewContext()
+//	context := GetNewContext()
 //	defer context.Close()
 //	col := context.DbCollection("labels")
 //	repo := &data.LabelRepository{C: col}
@@ -69,13 +69,13 @@ func CreateLabel(w http.ResponseWriter, r *http.Request) {
 //	w.Write(j)
 //}
 //
-// GetLabelById returns a single Label document by id
+// GetLabelById returns a single Label by id
 // Handler for HTTP Get - "/labels/{id}"
 func GetLabelById(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.LabelRepository{C: context}
 	label, err := repo.GetById(id)
 	if err != nil {
@@ -108,7 +108,7 @@ func GetLabelById(w http.ResponseWriter, r *http.Request) {
 //	// Get id from the incoming url
 //	vars := mux.Vars(r)
 //	user := vars["id"]
-//	context := NewContext()
+//	context := GetNewContext()
 //	defer context.Close()
 //	col := context.DbCollection("labels")
 //	repo := &data.LabelRepository{C: col}
@@ -128,7 +128,7 @@ func GetLabelById(w http.ResponseWriter, r *http.Request) {
 //	w.Write(j)
 //}
 //
-// UpdateLabel update an existing Label document
+// UpdateLabel updates an existing Label
 // Handler for HTTP Put - "/labels/{id}"
 func UpdateLabel(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
@@ -158,9 +158,9 @@ func UpdateLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	label.ID = uint(u64)
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.LabelRepository{C: context}
-	// Update an existing Label document
+	// Update an existing Label
 	if err := repo.Update(label); err != nil {
 		common.DisplayAppError(
 			w,
@@ -174,12 +174,12 @@ func UpdateLabel(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// DeleteLabel deelete an existing Label document
+// DeleteLabel deletes an existing Label
 // Handler for HTTP Delete - "/labels/{id}"
 func DeleteLabel(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	context := NewContext().PostgresDB
+	context := GetNewContext().PostgresDB
 	repo := &data.LabelRepository{C: context}
 	// Delete an existing Label
 	err := repo.Delete(id)
