@@ -40,19 +40,16 @@ func (r *LabelRepository) Delete(id string) error {
 //	}
 //	return labels
 //}
-//func (r *LabelRepository) GetAll() []models.Label {
-//	var labels []models.Label
-//	iter := r.C.Find(nil).Iter()
-//	result := models.Label{}
-//	for iter.Next(&result) {
-//		labels = append(labels, result)
-//	}
-//	return labels
-//}
+
+// GetAll fetches all Labels
+func (r *LabelRepository) GetAll() []models.Label {
+	var labels []models.Label
+	r.C.Find(&labels)
+	return labels
+}
+
 // GetById fetches Label by id
 func (r *LabelRepository) GetById(id string) (label models.Label, err error) {
-	// Preload Tasks when find label
-	//r.C.Preload("Tasks").Find(&label)
 	err = r.C.Preload("Task").First(&label, id).Error
 	return
 }

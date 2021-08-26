@@ -8,7 +8,6 @@ import (
 
 	"github.com/yusrilmr/todolist/backend/common"
 	"github.com/yusrilmr/todolist/backend/data"
-	//"github.com/yusrilmr/todolist/backend/models"
 )
 
 // CreateLabel insert a new Label
@@ -46,29 +45,28 @@ func CreateLabel(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//// GetLabels returns all Label
-//// Handler for HTTP Get - "/labels"
-//func GetLabels(w http.ResponseWriter, r *http.Request) {
-//	context := GetNewContext()
-//	defer context.Close()
-//	col := context.DbCollection("labels")
-//	repo := &data.LabelRepository{C: col}
-//	labels := repo.GetAll()
-//	j, err := json.Marshal(LabelsResource{Data: labels})
-//	if err != nil {
-//		common.DisplayAppError(
-//			w,
-//			err,
-//			"An unexpected error has occurred",
-//			500,
-//		)
-//		return
-//	}
-//	w.WriteHeader(http.StatusOK)
-//	w.Header().Set("Content-Type", "application/json")
-//	w.Write(j)
-//}
-//
+// GetLabels returns all Label
+// Handler for HTTP Get - "/labels"
+func GetLabels(w http.ResponseWriter, r *http.Request) {
+	context := GetNewContext().PostgresDB
+	repo := &data.LabelRepository{C: context}
+	labels := repo.GetAll()
+	j, err := json.Marshal(LabelsResource{Data: labels})
+
+	if err != nil {
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
 // GetLabelById returns a single Label by id
 // Handler for HTTP Get - "/labels/{id}"
 func GetLabelById(w http.ResponseWriter, r *http.Request) {

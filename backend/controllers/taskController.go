@@ -8,7 +8,6 @@ import (
 
 	"github.com/yusrilmr/todolist/backend/common"
 	"github.com/yusrilmr/todolist/backend/data"
-	//"github.com/yusrilmr/todolist/backend/models"
 )
 
 // CreateTask insert a new Task
@@ -63,8 +62,8 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
 
@@ -122,8 +121,8 @@ func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
 
